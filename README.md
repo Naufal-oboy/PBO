@@ -1,3 +1,8 @@
+Nama : Muhammad Naufal Adi Brata P.S.P
+NIM : 2409106049
+Kelas :B1-24
+Matkul : PBO
+
 # Sistem Manajemen Lapangan Futsal
 
 Program berbasis **Java** untuk mengelola data lapangan futsal menggunakan konsep **Object-Oriented Programming (OOP)**. Program mendukung operasi **CRUD** (Create, Read, Update, Delete) dengan penyimpanan data menggunakan `ArrayList` dan berjalan secara berulang hingga pengguna memilih menu keluar.
