@@ -9,7 +9,7 @@
 
 ---
 
-Program berbasis **Java** untuk mengelola data lapangan futsal menggunakan konsep **Object-Oriented Programming (OOP)**. Program ini menerapkan **Encapsulation** dan **Inheritance** dengan struktur class yang terbagi menjadi superclass dan dua subclass. Program mendukung operasi **CRUD** (Create, Read, Update, Delete) dengan penyimpanan data menggunakan `ArrayList` dan berjalan secara berulang hingga pengguna memilih menu keluar.
+Program berbasis **Java** untuk mengelola data lapangan futsal menggunakan konsep **Object-Oriented Programming (OOP)**. Program ini menerapkan **Encapsulation**, **Inheritance**, dan **Polymorphism**. Program mendukung operasi **CRUD** (Create, Read, Update, Delete) dengan penyimpanan data menggunakan `ArrayList` dan berjalan secara berulang hingga pengguna memilih menu keluar.
 
 ---
 
@@ -17,20 +17,51 @@ Program berbasis **Java** untuk mengelola data lapangan futsal menggunakan konse
 
 ```
 project/
-├── LapanganFutsal.java        # Superclass (Parent) — property dan method umum
-├── LapanganIndoor.java        # Subclass (Child) — lapangan indoor
-├── LapanganOutdoor.java       # Subclass (Child) — lapangan outdoor
+├── LapanganFutsal.java        # Superclass — property, method, overloading
+├── LapanganIndoor.java        # Subclass — lapangan indoor (overriding)
+├── LapanganOutdoor.java       # Subclass — lapangan outdoor (overriding)
 ├── SistemLapanganFutsal.java  # Class utama (main program + CRUD)
 └── README.md
 ```
 
 ---
 
+## Penerapan Polymorphism
+
+### 1. Method Overloading — Static Polymorphism
+
+Diterapkan pada `LapanganFutsal` dengan method `hitungTotalBiaya()`. Nama method sama namun parameter berbeda, sehingga Java memilih versi yang tepat berdasarkan argumen yang diberikan saat pemanggilan.
+
+```java
+// Overloading 1 — tanpa diskon (1 parameter)
+public int hitungTotalBiaya(int jamSewa)
+
+// Overloading 2 — dengan diskon persen (2 parameter)
+public int hitungTotalBiaya(int jamSewa, double diskonPersen)
+```
+
+| | Overloading 1 | Overloading 2 |
+|---|---|---|
+| Parameter | `int jamSewa` | `int jamSewa, double diskonPersen` |
+| Fungsi | Hitung total biaya tanpa potongan | Hitung total biaya setelah dikurangi diskon |
+| Validasi | Jam > 0 | Jam > 0, diskon 0–100% |
+
+### 2. Method Overriding — Dynamic Polymorphism
+
+Diterapkan pada kedua subclass. Method `tampilInfo()` yang diwarisi dari `LapanganFutsal` di-override di `LapanganIndoor` dan `LapanganOutdoor` dengan isi yang berbeda sesuai tipe lapangan masing-masing.
+
+| Class | Override | Tambahan yang Ditampilkan |
+|---|---|---|
+| `LapanganIndoor` | `@Override tampilInfo()` | `Tipe: Indoor` dan info `AC` |
+| `LapanganOutdoor` | `@Override tampilInfo()` | `Tipe: Outdoor` dan info `Sintetis` |
+
+Kedua subclass memanggil `super.tampilInfo()` terlebih dahulu untuk menampilkan data umum dari superclass, lalu menambahkan info khasnya masing-masing.
+
+---
+
 ## Penerapan Inheritance
 
-### Tipe Inheritance: Hierarchical Inheritance
-
-Satu superclass (`LapanganFutsal`) diturunkan ke dua subclass (`LapanganIndoor` dan `LapanganOutdoor`).
+Tipe **Hierarchical Inheritance** — satu superclass diturunkan ke dua subclass.
 
 ```
          LapanganFutsal          ← Superclass
@@ -38,27 +69,16 @@ Satu superclass (`LapanganFutsal`) diturunkan ke dua subclass (`LapanganIndoor` 
 LapanganIndoor    LapanganOutdoor  ← Subclass
 ```
 
-### Relasi is-a
-
-| Subclass | Relasi | Keterangan |
+| Subclass | Relasi | Property Tambahan |
 |---|---|---|
-| `LapanganIndoor` | is a `LapanganFutsal` | Lapangan indoor adalah lapangan futsal |
-| `LapanganOutdoor` | is a `LapanganFutsal` | Lapangan outdoor adalah lapangan futsal |
-
-### Keyword yang Digunakan
-
-| Keyword | Digunakan pada | Fungsi |
-|---|---|---|
-| `extends` | `LapanganIndoor`, `LapanganOutdoor` | Menghubungkan subclass ke superclass |
-| `super(...)` | Constructor subclass | Memanggil constructor superclass |
-| `super.tampilInfo()` | Method `tampilInfo()` subclass | Memanggil method superclass sebelum menambah info subclass |
-| `@Override` | `tampilInfo()` di kedua subclass | Menandai method yang di-override dari superclass |
+| `LapanganIndoor` | is a `LapanganFutsal` | `tersediaAC` |
+| `LapanganOutdoor` | is a `LapanganFutsal` | `jenisSintetis` |
 
 ---
 
 ## Penerapan Encapsulation
 
-Semua property di seluruh class dibuat `private` dan hanya dapat diakses melalui getter dan setter yang bersifat `public`.
+Semua property di seluruh class dibuat `private` dan diakses melalui getter dan setter `public`.
 
 | Access Modifier | Diterapkan pada | Dapat Diakses |
 |---|---|---|
@@ -70,8 +90,6 @@ Semua property di seluruh class dibuat `private` dan hanya dapat diakses melalui
 ## Detail Class
 
 ### `LapanganFutsal.java` — Superclass
-
-Class induk yang mendefinisikan property dan method umum yang diwariskan ke kedua subclass.
 
 **Property (`private`):**
 
@@ -86,9 +104,8 @@ Class induk yang mendefinisikan property dan method umum yang diwariskan ke kedu
 **Constructor:**
 
 ```java
-LapanganFutsal()                                              // Non-argument
-LapanganFutsal(int id, String nama, String lokasi,
-               int harga, String status)                      // Parameterized
+LapanganFutsal()
+LapanganFutsal(int id, String nama, String lokasi, int harga, String status)
 ```
 
 **Getter (`public`):** `getId()`, `getNama()`, `getLokasi()`, `getHarga()`, `getStatus()`
@@ -97,23 +114,22 @@ LapanganFutsal(int id, String nama, String lokasi,
 
 | Setter | Validasi |
 |---|---|
-| `setNama(String nama)` | Tidak boleh null atau kosong → default `"Tidak Diketahui"` |
-| `setLokasi(String lokasi)` | Tidak boleh null atau kosong → default `"Tidak Diketahui"` |
-| `setHarga(int harga)` | Tidak boleh negatif → diset ke `0` |
-| `setStatus(String status)` | Hanya `"Tersedia"` atau `"Tidak Tersedia"` → default `"Tersedia"` |
+| `setNama(String nama)` | Tidak boleh null atau kosong |
+| `setLokasi(String lokasi)` | Tidak boleh null atau kosong |
+| `setHarga(int harga)` | Tidak boleh negatif |
+| `setStatus(String status)` | Hanya `"Tersedia"` atau `"Tidak Tersedia"` |
 
-**Method (`public`):**
+**Method Overloading (`public`):**
 
-| Method | Return | Keterangan |
+| Method | Parameter | Keterangan |
 |---|---|---|
-| `tampilInfo()` | `void` | Menampilkan data dasar lapangan |
-| `hitungTotalBiaya(int jamSewa)` | `int` | Menghitung total biaya: `harga x jamSewa` |
+| `tampilInfo()` | — | Menampilkan data dasar lapangan |
+| `hitungTotalBiaya(int jamSewa)` | 1 | Hitung biaya tanpa diskon |
+| `hitungTotalBiaya(int jamSewa, double diskonPersen)` | 2 | Hitung biaya dengan diskon |
 
 ---
 
 ### `LapanganIndoor.java` — Subclass
-
-Mewarisi semua property dan method dari `LapanganFutsal`. Menambah property khas lapangan indoor.
 
 **Property tambahan (`private`):**
 
@@ -122,31 +138,24 @@ Mewarisi semua property dan method dari `LapanganFutsal`. Menambah property khas
 | `tersediaAC` | `boolean` | Ketersediaan AC di lapangan |
 
 **Constructor:**
-
 ```java
-LapanganIndoor(int id, String nama, String lokasi,
-               int harga, String status, boolean tersediaAC)
+LapanganIndoor(int id, String nama, String lokasi, int harga, String status, boolean tersediaAC)
 ```
 
-**Getter:** `isTersediaAC()`
+**Getter:** `isTersediaAC()` | **Setter:** `setTersediaAC(boolean tersediaAC)`
 
-**Setter:** `setTersediaAC(boolean tersediaAC)`
-
-**Override Method:**
-
+**Override:**
 ```java
 @Override
 public void tampilInfo() {
-    super.tampilInfo();   // tampilkan data dari superclass
-    // tambah: Tipe Indoor dan info AC
+    super.tampilInfo(); // data dari superclass
+    // tambah: Tipe Indoor + info AC
 }
 ```
 
 ---
 
 ### `LapanganOutdoor.java` — Subclass
-
-Mewarisi semua property dan method dari `LapanganFutsal`. Menambah property khas lapangan outdoor.
 
 **Property tambahan (`private`):**
 
@@ -155,23 +164,18 @@ Mewarisi semua property dan method dari `LapanganFutsal`. Menambah property khas
 | `jenisSintetis` | `String` | Jenis rumput sintetis (Premium / Standard) |
 
 **Constructor:**
-
 ```java
-LapanganOutdoor(int id, String nama, String lokasi,
-                int harga, String status, String jenisSintetis)
+LapanganOutdoor(int id, String nama, String lokasi, int harga, String status, String jenisSintetis)
 ```
 
-**Getter:** `getJenisSintetis()`
+**Getter:** `getJenisSintetis()` | **Setter:** `setJenisSintetis(String jenisSintetis)` (validasi tidak boleh kosong)
 
-**Setter + Validasi:** `setJenisSintetis(String jenisSintetis)` — tidak boleh null atau kosong
-
-**Override Method:**
-
+**Override:**
 ```java
 @Override
 public void tampilInfo() {
-    super.tampilInfo();   // tampilkan data dari superclass
-    // tambah: Tipe Outdoor dan info jenis sintetis
+    super.tampilInfo(); // data dari superclass
+    // tambah: Tipe Outdoor + info jenis sintetis
 }
 ```
 
@@ -179,18 +183,16 @@ public void tampilInfo() {
 
 ### `SistemLapanganFutsal.java` — Class Utama
 
-Class utama yang berisi `main()` dan seluruh logika menu CRUD. ArrayList bertipe superclass (`LapanganFutsal`) sehingga dapat menampung objek dari kedua subclass sekaligus.
-
 **Method CRUD:**
 
 | Method | Menu | Keterangan |
 |---|---|---|
 | `createLapangan()` | 1 — Create | Pilih tipe (Indoor/Outdoor), input data, buat objek subclass |
-| `readLapangan()` | 2 — Read | Tampilkan semua lapangan via `tampilInfo()` |
+| `readLapangan()` | 2 — Read | Tampilkan semua lapangan via `tampilInfo()` (overriding berjalan otomatis) |
 | `updateLapangan()` | 3 — Update | Edit data via setter, cek tipe dengan `instanceof` |
 | `deleteLapangan()` | 4 — Delete | Hapus lapangan by ID setelah konfirmasi |
-| `hitungBiayaSewa()` | 5 — Hitung Biaya | Hitung total biaya sewa berdasarkan jam |
-| `cariById(int id)` | *(helper)* | Cari lapangan berdasarkan ID menggunakan `getId()` |
+| `hitungBiayaSewa()` | 5 — Hitung Biaya | Pilih tanpa/dengan diskon, memanggil overloading yang sesuai |
+| `cariById(int id)` | *(helper)* | Cari lapangan berdasarkan ID |
 
 ---
 
@@ -210,7 +212,7 @@ Class utama yang berisi `main()` dan seluruh logika menu CRUD. ArrayList bertipe
 Pilih menu:
 ```
 
-**Contoh output LapanganIndoor:**
+**Contoh output Read (Overriding berjalan):**
 ```
 --------------------------------------
 ID      : 1
@@ -221,10 +223,6 @@ Status  : Tersedia
 Tipe    : Indoor
 AC      : Ada
 --------------------------------------
-```
-
-**Contoh output LapanganOutdoor:**
-```
 --------------------------------------
 ID      : 2
 Nama    : Lapangan B
@@ -234,4 +232,26 @@ Status  : Tersedia
 Tipe    : Outdoor
 Sintetis: Premium
 --------------------------------------
+```
+
+**Contoh output Hitung Biaya tanpa diskon (Overloading 1):**
+```
+Rincian Sewa:
+   Lapangan  : Lapangan A
+   Lokasi    : Jl. Sudirman No. 1
+   Durasi    : 2 jam
+   Harga/Jam : Rp 150000
+   TOTAL     : Rp 300000
+```
+
+**Contoh output Hitung Biaya dengan diskon (Overloading 2):**
+```
+Rincian Sewa:
+   Lapangan       : Lapangan A
+   Lokasi         : Jl. Sudirman No. 1
+   Durasi         : 2 jam
+   Harga/Jam      : Rp 150000
+   Total Sebelum  : Rp 300000
+   Diskon         : 10.0%
+   TOTAL BAYAR    : Rp 270000
 ```
